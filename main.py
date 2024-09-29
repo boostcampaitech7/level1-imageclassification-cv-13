@@ -9,6 +9,8 @@ from trainer import Trainer
 from utils import accuracy
 from transform import Transform
 import config
+from torch.optim.lr_scheduler import  ReduceLROnPlateau
+
 
 def main():
     train_info = load_data(config.TRAIN_DATA_INFO_FILE)
@@ -35,8 +37,9 @@ def main():
     
     optimizer = torch.optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
     criterion = torch.nn.CrossEntropyLoss()
+    scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=3, verbose=True)
 
-    trainer = Trainer(model, optimizer, criterion, config.DEVICE, early_stop=True, patience_limit=5)
+    trainer = Trainer(model, optimizer, criterion, config.DEVICE, scheduler, early_stop=True, patience_limit=5)
     trainer.train(train_loader, val_loader, config.EPOCHS)
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ import torch
 from tqdm.auto import tqdm
 
 class Trainer:
-    def __init__(self, model, optimizer, criterion, device,  early_stop=False, patience_limit=None):
+    def __init__(self, model, optimizer, criterion, device,scheduler = None,  early_stop=False, patience_limit=None):
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion
@@ -14,7 +14,8 @@ class Trainer:
         self.best_val_loss = float('inf') 
         self.best_model = None
         self.patience_check = 0  
-        self.save_path = './best_model.pt'  #
+        self.save_path = './best_model.pt'  
+        self.scheduler = scheduler
 
     def train_epoch(self, train_loader):
         self.model.train()
@@ -66,4 +67,6 @@ class Trainer:
                         break
                 else:
                     self.patience_check = 0
+            
+            self.scheduler.step(val_loss)
 
