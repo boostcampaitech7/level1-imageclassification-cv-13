@@ -89,7 +89,8 @@ def train_ensemble_model(ensemble_model, train_loader, val_loader, device, epoch
     trainer = Trainer(model=ensemble_model, 
                       optimizer=optimizer, 
                       criterion=criterion, 
-                      device=device, 
+                      device=device,
+                      scheduler = scheduler, 
                       early_stop=True, 
                       patience_limit=3)
 
