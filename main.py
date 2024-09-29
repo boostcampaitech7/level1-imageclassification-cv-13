@@ -1,6 +1,6 @@
 
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, ConcatDataset
 from data_loader import CustomDataset, load_data, split_data  
 from models.models import CustomModel
 from models.model_CLIP import CLIP_MLP
@@ -17,8 +17,12 @@ def main():
     train_transform = Transform(is_train = True)
     val_transform = Transform(is_train = False)
 
-    train_dataset = CustomDataset(config.TRAIN_DATA_DIR, train_df, train_transform, is_inference=False)
+    aug_dataset = CustomDataset(config.TRAIN_DATA_DIR, train_df, train_transform, is_inference=False)
+    train_dataset = CustomDataset(config.TRAIN_DATA_DIR, train_df, val_transform, is_inference = False)
     val_dataset = CustomDataset(config.TRAIN_DATA_DIR, val_df, val_transform, is_inference=False)
+
+
+    train_dataset = ConcatDataset([train_dataset, aug_dataset])
     
     train_loader = DataLoader(train_dataset, batch_size=config.BATCH_SIZE, shuffle=True, num_workers = 4)
     val_loader = DataLoader(val_dataset, batch_size=config.BATCH_SIZE, shuffle=False)
