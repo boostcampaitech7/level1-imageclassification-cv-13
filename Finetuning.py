@@ -55,7 +55,7 @@ def main():
         
         scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=3, verbose=True)
         # Trainer 설정 및 학습
-        trainer = Trainer(model, optimizer, criterion, config.DEVICE, early_stop=False, patience_limit=5)
+        trainer = Trainer(model, optimizer, criterion, config.DEVICE,scheduler, early_stop=False, patience_limit=5)
         
         trainer.train(train_loader, val_loader, epochs=5)
         # 최종 모델 저장
